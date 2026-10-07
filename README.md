@@ -1,8 +1,60 @@
-# Orbito UI 
+# Orbito UI
 
-Three original implementations for decision interfaces: Branchflow, Evidence Lens, and Action Halo. MIT licensed. React 18/19 and Tailwind CSS 4 with shadcn semantic tokens.
+React components for interfaces that show progress, compare evidence, and present contextual actions.
 
-## Run and verify
+**[Live demos](https://orbito-ui.vercel.app/)** · **[Component source](registry/default)** · **[MIT license](LICENSE)**
+
+| Component | Purpose |
+| --- | --- |
+| Branchflow | Show workflow steps, status, and optional branches. |
+| Evidence Lens | Compare weighted signals and inspect their supporting notes. |
+| Action Halo | Open a compact, keyboard-accessible action menu. |
+
+The live demos render the same React component files distributed through the registry. Components are copied into your application, so you can edit their source.
+
+## Install
+
+Use a React 18 or 19 project with Tailwind CSS 4 and [shadcn initialized](https://ui.shadcn.com/docs/cli). Install any component by its public registry URL:
+
+```sh
+npx shadcn@latest add https://orbito-ui.vercel.app/r/branchflow.json
+npx shadcn@latest add https://orbito-ui.vercel.app/r/evidence-lens.json
+npx shadcn@latest add https://orbito-ui.vercel.app/r/action-halo.json
+```
+
+The site has separate copy buttons for these commands. The [registry catalog](https://orbito-ui.vercel.app/r/registry.json) lists all three items. No npm package or official shadcn directory listing is required for URL installation.
+
+## Use
+
+```tsx
+import { Branchflow } from "@/components/ui/branchflow"
+import { EvidenceLens } from "@/components/ui/evidence-lens"
+import { ActionHalo } from "@/components/ui/action-halo"
+
+<Branchflow steps={[
+  { id: "review", label: "Review evidence", status: "current" },
+  { id: "decide", label: "Make a decision", status: "upcoming" },
+]} />
+
+<EvidenceLens
+  items={[{ id: "signal", label: "Supporting signal", value: 54, note: "Recent interviews." }]}
+  conclusion="Review the remaining uncertainty."
+/>
+
+<ActionHalo actions={[{ id: "share", label: "Share", onSelect: () => share() }]} />
+```
+
+The callbacks and sample data above belong to your application. Orbito UI does not perform the action itself.
+
+## Component API
+
+- **Branchflow:** `steps: BranchflowStep[]`, `className?: string`. Each step needs a unique `id`, `label`, and `status` (`complete`, `current`, `upcoming`, or `blocked`). Optional `detail` and `branches` with `neutral`, `positive`, or `warning` tone. The caller controls progress.
+- **Evidence Lens:** `items: EvidenceItem[]`, `conclusion?: string`, `className?: string`. Each item needs a unique `id`, `label`, and numeric `value`; `note` and CSS `color` are optional. Negative or nonfinite values count as zero. Values are relative weights, not confidence estimates.
+- **Action Halo:** `actions: HaloAction[]`, `label?: string`, `className?: string`. Each action needs a unique `id`, `label`, and `onSelect` callback. `icon` and `disabled` are optional. Arrow keys, Home/End, Enter, Escape, Tab, and outside clicks are supported. Leave space around the trigger for its 256px menu and avoid clipping ancestors.
+
+All components use shadcn semantic color tokens. Ensure Tailwind scans the installed component directory. The website supports light and dark themes and reduced motion.
+
+## Develop
 
 ```sh
 npm ci
@@ -11,51 +63,10 @@ npm run build
 npm run dev
 ```
 
-The demo imports the distributed React files directly. `npm run build` type-checks all code, generates registry files and produces `dist/` for static hosting. `package-lock.json` pins dependencies. No API keys, database, or account integration is required.
+`registry/default/` contains the installable source. `src/` contains the showcase, `scripts/build-registry.mjs` generates the JSON in `public/r/`, and `tests/` contains interaction tests. Vercel builds the Vite site and serves the generated files from `/r/`. `REGISTRY_ORIGIN` can override the catalog homepage when building for another domain.
 
-## Installation into another application
+## Verification
 
-Initialize shadcn in your React application, then install from the public site:
+The TypeScript build and four interaction tests pass. The public registry returned HTTP 200 with embedded source for all three components. A fresh Vite project initialized with the shadcn CLI installed all three public URLs and passed a strict TypeScript production build. Live browser checks covered progress changes, evidence selection and empty state, Action Halo keyboard selection, theme switching, and the dark theme text contrast. These checks are not a screen-reader or cross-browser certification.
 
-```sh
-npx shadcn@latest init
-npx shadcn@latest add https://orbito-ui.vercel.app/r/branchflow.json
-npx shadcn@latest add https://orbito-ui.vercel.app/r/evidence-lens.json
-npx shadcn@latest add https://orbito-ui.vercel.app/r/action-halo.json
-```
-
-The website's copy buttons use its current host automatically. Vercel supplies the production host to the registry build; `REGISTRY_ORIGIN` can override it for another host. The development fallback is `http://localhost:5173`.
-
-## API
-
-### Branchflow
-
-`steps: BranchflowStep[]`, `className?: string`. Each step has a unique `id`, `label`, and `status`: `complete | current | upcoming | blocked`. Optional `detail` and `branches: {label, tone?: neutral | positive | warning}[]`. Keep step IDs and branch labels unique. An empty list renders an empty progress list. The caller determines progress; branch labels are informational.
-
-### EvidenceLens
-
-`items: EvidenceItem[]`, `conclusion?: string`, `className?: string`. Each item has unique `id`, `label`, `value`, optional `note` and `color` (CSS color string). Negative/nonfinite numbers are treated as zero. Empty data has a visible fallback. Selecting an item reveals its note; removing the selected item falls back to the first remaining item. Values are relative weights, not automatically confidence estimates. Custom colors are decorative; all values remain visible as text.
-
-### ActionHalo
-
-`actions: HaloAction[]`, `label?: string`, `className?: string`. Each action has unique `id`, `label`, `onSelect: () => void`, optional `icon: ReactNode`, and `disabled`. Trigger opens a nonmodal menu above itself. Arrow keys/Home/End navigate enabled items, Enter selects, Escape closes and restores focus, Tab exits, outside pointer closes. Empty actions disable the trigger. Keep the trigger at least 128px from viewport sides to accommodate the 256px panel. Avoid overflow-hidden ancestors.
-
-Callbacks are synchronous notifications: the consumer owns async progress, errors, permissions and real business actions.
-
-## Styling and accessibility
-
-Use shadcn's `background`, `foreground`, `card`, `card-foreground`, `muted`, `muted-foreground` and `border` tokens. Tailwind must scan the installed component paths. Demos support light/dark themes and reduced motion. Native buttons and menu roles provide keyboard semantics. Automated DOM interaction tests are included; this is not an accessibility certification.
-
-## Publishing
-
-This single repository contains the component sources in `registry/default`, the demo site in `src`, the registry generator, docs, and tests. Vercel builds the site and serves generated JSON at `/r/`. npm publication and a listing in shadcn's official directory are separate distribution channels.
-
-## Verification results
-
-- TypeScript strict check: passed.
-- Vite production build: passed.
-- Vitest: 4 tests passed (keyboard navigation, selection/focus return, outside dismissal, empty/disabled actions, evidence data changes, invalid values, workflow status).
-- Fresh Vite consumer project: shadcn initialized; all three public registry URLs installed with the official CLI; TypeScript strict build passed after reinstalling the corrected Branchflow.
-- Live browser interactions verified for workflow progress, evidence selection and empty state, Action Halo keyboard selection, and light/dark toggle. The dark demo contrast fix is in the subsequent commit.
-- Public registry endpoints returned HTTP 200 with embedded source for all three components, and the registry catalog published the production homepage.
-- Vite emits a benign warning when bundling the React components' `use client` directives; the directives remain in the registry source for Next.js consumers.
+Created by Abhinav Singh. Licensed under MIT.
