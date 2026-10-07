@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "orbito-ui",
+  "homepage": "http://localhost:5173",
+  "items": [
+    {
+      "name": "branchflow",
+      "type": "registry:ui",
+      "title": "Branchflow",
+      "description": "A branching progress map for workflows with alternate paths.",
+      "files": [
+        {
+          "path": "registry/default/branchflow.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "evidence-lens",
+      "type": "registry:ui",
+      "title": "Evidence Lens",
+      "description": "An interactive evidence comparison with a compact conclusion layer.",
+      "files": [
+        {
+          "path": "registry/default/evidence-lens.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "action-halo",
+      "type": "registry:ui",
+      "title": "Action Halo",
+      "description": "A spatial action menu for compact contextual choices.",
+      "files": [
+        {
+          "path": "registry/default/action-halo.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    }
+  ]
+}

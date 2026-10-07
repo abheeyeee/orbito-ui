@@ -1,0 +1,20 @@
+import * as React from 'react';
+import {afterEach,expect,test} from 'vitest';
+import {render,screen,cleanup} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {ActionHalo} from '../registry/default/action-halo';
+import {EvidenceLens} from '../registry/default/evidence-lens';
+import {Branchflow} from '../registry/default/branchflow';
+afterEach(cleanup);
+test('menu opens with keyboard, skips disabled actions, executes callback and restores focus',async()=>{
+ const user=userEvent.setup();let called=0;
+ render(<ActionHalo actions={[{id:'a',label:'Explain',onSelect:()=>called++},{id:'b',label:'Disabled',disabled:true,onSelect:()=>{}},{id:'c',label:'Share',onSelect:()=>{}}]}/>);
+ const trigger=screen.getByRole('button',{name:'Open actions'});trigger.focus();await user.keyboard('{Enter}');
+ expect(document.activeElement).toBe(screen.getByRole('menuitem',{name:'Explain'}));
+ await user.keyboard('{ArrowDown}');expect(document.activeElement).toBe(screen.getByRole('menuitem',{name:'Share'}));
+ await user.keyboard('{Home}{Enter}');expect(called).toBe(1);expect(screen.queryByRole('menu')).toBeNull();expect(document.activeElement).toBe(trigger);
+ await user.keyboard('{Enter}{Escape}');expect(screen.queryByRole('menu')).toBeNull();expect(document.activeElement).toBe(trigger);
+});
+test('outside pointer closes and empty menu is disabled',async()=>{const user=userEvent.setup();const {rerender}=render(<ActionHalo actions={[{id:'a',label:'One',onSelect:()=>{}}]}/>);await user.click(screen.getByRole('button'));await user.click(document.body);expect(screen.queryByRole('menu')).toBeNull();rerender(<ActionHalo actions={[]}/>);expect((screen.getByRole('button') as HTMLButtonElement).disabled).toBe(true)});
+test('evidence handles invalid values, updates selection and recovers after data changes',async()=>{const user=userEvent.setup();const {rerender}=render(<EvidenceLens items={[{id:'a',label:'A',value:NaN,note:'First'},{id:'b',label:'B',value:-10,note:'Second'}]}/>);expect(screen.getByText('No positive values to compare.')).toBeTruthy();await user.click(screen.getByRole('button',{name:'0 B'}));expect(screen.getByText('Second')).toBeTruthy();rerender(<EvidenceLens items={[{id:'a',label:'A',value:2,note:'First'}]}/>);expect(screen.getByText('First')).toBeTruthy();rerender(<EvidenceLens items={[]}/>);expect(screen.getByText('No evidence available.')).toBeTruthy()});
+test('workflow exposes current step and blocked text',()=>{const {container}=render(<Branchflow steps={[{id:'1',label:'Review',status:'current'},{id:'2',label:'Release',status:'blocked'}]}/>);expect(container.querySelector('[aria-current="step"]')).toBeTruthy();expect(screen.getByText('blocked')).toBeTruthy()});

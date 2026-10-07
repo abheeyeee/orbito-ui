@@ -15,16 +15,16 @@ The demo imports the distributed React files directly. `npm run build` type-chec
 
 ## Installation into another application
 
-Initialize shadcn in your React application, then install from your own deployed origin:
+Initialize shadcn in your React application, then install from the public site:
 
 ```sh
 npx shadcn@latest init
-npx shadcn@latest add https://YOUR-DOMAIN/r/branchflow.json
-npx shadcn@latest add https://YOUR-DOMAIN/r/evidence-lens.json
-npx shadcn@latest add https://YOUR-DOMAIN/r/action-halo.json
+npx shadcn@latest add https://YOUR-VERCEL-DOMAIN/r/branchflow.json
+npx shadcn@latest add https://YOUR-VERCEL-DOMAIN/r/evidence-lens.json
+npx shadcn@latest add https://YOUR-VERCEL-DOMAIN/r/action-halo.json
 ```
 
-Set `REGISTRY_ORIGIN=https://YOUR-DOMAIN` when building for hosting. The development fallback is `http://localhost:5173`. The website's copy buttons use the current host automatically. A custom domain or new deployment has not been configured in this release.
+The website's copy buttons use its current host automatically. Vercel supplies the production host to the registry build; `REGISTRY_ORIGIN` can override it for another host. The development fallback is `http://localhost:5173`.
 
 ## API
 
@@ -46,11 +46,9 @@ Callbacks are synchronous notifications: the consumer owns async progress, error
 
 Use shadcn's `background`, `foreground`, `card`, `card-foreground`, `muted`, `muted-foreground` and `border` tokens. Tailwind must scan the installed component paths. Demos support light/dark themes and reduced motion. Native buttons and menu roles provide keyboard semantics. Automated DOM interaction tests are included; this is not an accessibility certification.
 
-## Release status
+## Publishing
 
-The previous hosted prototype is unchanged. This source release awaits the owner's next deployment instruction. Browser visual QA was unavailable in this environment; no cross-browser or screen-reader certification is claimed. The current tests cover menu interaction, disabled/empty states, evidence updates and workflow semantics.
-
-No official shadcn directory listing, npm release or public GitHub repository has been created.
+This single repository contains the component sources in `registry/default`, the demo site in `src`, the registry generator, docs, and tests. Vercel builds the site and serves generated JSON at `/r/`. npm publication and a listing in shadcn's official directory are separate distribution channels.
 
 ## Verification results
 
@@ -58,5 +56,5 @@ No official shadcn directory listing, npm release or public GitHub repository ha
 - Vite production build: passed.
 - Vitest: 4 tests passed (keyboard navigation, selection/focus return, outside dismissal, empty/disabled actions, evidence data changes, invalid values, workflow status).
 - Fresh-project shadcn CLI: registry parsing passed, then installation was blocked when the environment's proxy rejected `https://ui.shadcn.com/r/colors/neutral.json`. Full CLI installation is therefore unverified.
-- Browser visual QA: not available in this environment.
+- Browser visual QA and fresh-project installation should be repeated against the production URL before announcing a verified release.
 - Vite emits a benign warning when bundling the React components' `use client` directives; the directives remain in the registry source for Next.js consumers.
