@@ -1,4 +1,4 @@
-# Orbito UI · Abhinav Singh
+# Orbito UI 
 
 Three original implementations for decision interfaces: Branchflow, Evidence Lens, and Action Halo. MIT licensed. React 18/19 and Tailwind CSS 4 with shadcn semantic tokens.
 
