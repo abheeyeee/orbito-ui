@@ -55,7 +55,7 @@ This single repository contains the component sources in `registry/default`, the
 - TypeScript strict check: passed.
 - Vite production build: passed.
 - Vitest: 4 tests passed (keyboard navigation, selection/focus return, outside dismissal, empty/disabled actions, evidence data changes, invalid values, workflow status).
-- Fresh-project shadcn CLI: registry parsing passed, then installation was blocked when the environment's proxy rejected `https://ui.shadcn.com/r/colors/neutral.json`. Full CLI installation is therefore unverified.
+- Fresh Vite consumer project: shadcn initialized; all three public registry URLs installed with the official CLI; TypeScript strict build passed after reinstalling the corrected Branchflow.
 - Live browser interactions verified for workflow progress, evidence selection and empty state, Action Halo keyboard selection, and light/dark toggle. The dark demo contrast fix is in the subsequent commit.
-- Full fresh-project shadcn CLI installation remains unverified in this environment.
+- Public registry endpoints returned HTTP 200 with embedded source for all three components, and the registry catalog published the production homepage.
 - Vite emits a benign warning when bundling the React components' `use client` directives; the directives remain in the registry source for Next.js consumers.
