@@ -19,9 +19,9 @@ Initialize shadcn in your React application, then install from the public site:
 
 ```sh
 npx shadcn@latest init
-npx shadcn@latest add https://YOUR-VERCEL-DOMAIN/r/branchflow.json
-npx shadcn@latest add https://YOUR-VERCEL-DOMAIN/r/evidence-lens.json
-npx shadcn@latest add https://YOUR-VERCEL-DOMAIN/r/action-halo.json
+npx shadcn@latest add https://orbito-ui.vercel.app/r/branchflow.json
+npx shadcn@latest add https://orbito-ui.vercel.app/r/evidence-lens.json
+npx shadcn@latest add https://orbito-ui.vercel.app/r/action-halo.json
 ```
 
 The website's copy buttons use its current host automatically. Vercel supplies the production host to the registry build; `REGISTRY_ORIGIN` can override it for another host. The development fallback is `http://localhost:5173`.
@@ -56,5 +56,6 @@ This single repository contains the component sources in `registry/default`, the
 - Vite production build: passed.
 - Vitest: 4 tests passed (keyboard navigation, selection/focus return, outside dismissal, empty/disabled actions, evidence data changes, invalid values, workflow status).
 - Fresh-project shadcn CLI: registry parsing passed, then installation was blocked when the environment's proxy rejected `https://ui.shadcn.com/r/colors/neutral.json`. Full CLI installation is therefore unverified.
-- Browser visual QA and fresh-project installation should be repeated against the production URL before announcing a verified release.
+- Live browser interactions verified for workflow progress, evidence selection and empty state, Action Halo keyboard selection, and light/dark toggle. The dark demo contrast fix is in the subsequent commit.
+- Full fresh-project shadcn CLI installation remains unverified in this environment.
 - Vite emits a benign warning when bundling the React components' `use client` directives; the directives remain in the registry source for Next.js consumers.
